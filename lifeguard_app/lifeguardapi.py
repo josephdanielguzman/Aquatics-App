@@ -3,7 +3,7 @@ from . import models
 from .db import engine
 from lifeguard_app.routers import guard
 
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

@@ -41,3 +41,11 @@ class Rotations(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
+
+class Assignments(Base):
+    __tablename__ = "assignments"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    shift_id = Column(Integer, ForeignKey("shifts.id", ondelete="CASCADE"), nullable=False)
+    spot_id = Column(Integer, ForeignKey("spots.id", ondelete="CASCADE"), nullable=False)
+    time = Column(String, nullable=False)

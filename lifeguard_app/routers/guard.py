@@ -2,7 +2,7 @@ from .. import models, schemas
 from fastapi import HTTPException, Depends, status, APIRouter
 from sqlalchemy.orm import Session
 from ..db import get_db
-from ..models import
+
 
 router = APIRouter(prefix='/guards', tags=['Guards'])
 
@@ -21,8 +21,24 @@ def get_guard(id: int, db: Session = Depends(get_db)):
 
     return guard
 
+#TODO: return guard name and spot, schema?
 @router.get("/{id}/spot")
-def get_current_spot(guard_id: int, db: Session = Depends(get_db)):
+def get_current_spot(id: int, db: Session = Depends(get_db)):
+    spot = (db.query(models.Spots.name)
+            .join(models.Assignments, models.Assignments.spot_id == models.Spots.id)
+            .join(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
+            .filter(models.Shifts.guard_id == id).scalar())
+
+    if not spot:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Spot not found")
+
+    return spot
+
+""" original attempt:
+shift_id = db.query(models.Shifts.id).filter(models.Shifts.guard_id == id).scalar()
+spot_id = db.query(models.Assignments.spot_id).filter(models.Assignments.shift_id == shift_id).scalar()
+spot = db.query(models.Spots.name).filter(models.Spots.id == spot_id).scalar()
+"""
 
 # DONE
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model=schemas.Guard)
