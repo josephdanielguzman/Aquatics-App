@@ -13,8 +13,8 @@ class Breaks(Base):
     __tablename__ = "breaks"
 
     id = Column(Integer, primary_key=True, nullable=False)
-    type = Column(String, nullable=False)
-    start_time = Column(String, nullable=True)
+    type = Column(Integer, ForeignKey("break_types.id", ondelete="CASCADE"), nullable=False)
+    start_time = Column(String, nullable=False)
     end_time = Column(String, nullable=True)
 
     guard_id = Column(Integer, ForeignKey("guards.id", ondelete="CASCADE"), nullable=False)
@@ -49,3 +49,9 @@ class Assignments(Base):
     shift_id = Column(Integer, ForeignKey("shifts.id", ondelete="CASCADE"), nullable=False)
     spot_id = Column(Integer, ForeignKey("spots.id", ondelete="CASCADE"), nullable=False)
     time = Column(String, nullable=False)
+
+class BreakTypes(Base):
+    __tablename__ = "break_types"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    type = Column(String, nullable=False)

@@ -3,8 +3,6 @@ from fastapi import Depends, status, APIRouter
 from sqlalchemy.orm import Session
 from ..db import get_db
 
-#TODO: finish assignments endpoint
-
 router = APIRouter(prefix="/assignments", tags = ["assignments"])
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Assignment)

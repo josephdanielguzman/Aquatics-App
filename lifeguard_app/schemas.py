@@ -19,4 +19,14 @@ class ShiftClockOut(BaseModel):
 
 class ShiftResponse(ShiftClockIn, ShiftClockOut):
     id: int
-    pass
+
+class BreakStart(BaseModel):
+    guard_id: int
+    type: int
+    start_time: str
+
+class BreakEnd(BaseModel):
+    end_time: str
+
+class BreakResponse(BreakStart, BreakEnd):
+    id: int
