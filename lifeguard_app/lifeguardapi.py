@@ -1,14 +1,10 @@
 from fastapi import FastAPI
-from . import models
-from .db import engine
-from lifeguard_app.routers import guard
-
-# models.Base.metadata.create_all(bind=engine)
-
+from lifeguard_app.routers import guards, assignments, shifts, rotations
 app = FastAPI()
-
-app.include_router(guard.router)
-
+app.include_router(guards.router)
+app.include_router(assignments.router)
+app.include_router(shifts.router)
+app.include_router(rotations.router)
 @app.get("/")
 async def root():
     return {"Message": "GG Aquatics"}
