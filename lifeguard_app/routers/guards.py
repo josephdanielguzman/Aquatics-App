@@ -2,11 +2,14 @@ from .. import models, schemas
 from fastapi import HTTPException, Depends, status, APIRouter
 from sqlalchemy.orm import Session
 from ..db import get_db
+
 router = APIRouter(prefix='/guards', tags=['Guards'])
+
 @router.get("/")
 def get_guards(db: Session = Depends(get_db)):
     guards = db.query(models.Guards).all()
     return guards
+
 @router.get("/{id}")
 def get_guard(id: int, db: Session = Depends(get_db)):
     guard = db.query(models.Guards).where(models.Guards.id == id).first()
@@ -14,6 +17,7 @@ def get_guard(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Guard not found")
 
     return guard
+
 @router.get("/{id}/spot")
 def get_current_spot(id: int, db: Session = Depends(get_db)):
     spot = (db.query(models.Spots.name)
@@ -25,6 +29,7 @@ def get_current_spot(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Spot not found")
 
     return spot
+
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model=schemas.Guard)
 def create_guard(guard: schemas.Guard, db: Session = Depends(get_db)):
     new_guard = models.Guards(**guard.dict())
@@ -32,6 +37,7 @@ def create_guard(guard: schemas.Guard, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_guard)
     return new_guard
+
 @router.put("/{id}")
 def update_guard(id: int, updated_guard: schemas.Guard, db: Session = Depends(get_db)):
     guard = db.query(models.Guards).where(models.Guards.id == id)
@@ -43,6 +49,7 @@ def update_guard(id: int, updated_guard: schemas.Guard, db: Session = Depends(ge
     db.commit()
 
     return guard.first()
+
 @router.delete("/{id}", status_code = status.HTTP_204_NO_CONTENT)
 def delete_guard(id: int, db: Session = Depends(get_db)):
     guard = db.query(models.Guards).where(models.Guards.id == id)
