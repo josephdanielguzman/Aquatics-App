@@ -10,6 +10,8 @@ def get_guards(db: Session = Depends(get_db)):
     guards = db.query(models.Guards).all()
     return guards
 
+#TODO: implement table get method
+
 @router.get("/{id}")
 def get_guard(id: int, db: Session = Depends(get_db)):
     guard = db.query(models.Guards).where(models.Guards.id == id).first()

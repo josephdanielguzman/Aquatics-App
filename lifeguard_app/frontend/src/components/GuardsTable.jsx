@@ -44,12 +44,12 @@ export default function GuardsTable(){
 
             //TODO: Make row blue on selection
             render: (_, record) =>
-            <Button type={"default"}>Select</Button>
+            <Button type={"primary"} >Select</Button>
         }]
 
     return (
         <div>
-            <Table  dataSource={data} columns={columns} pagination={false} scroll={{y: 640}} virtual rowKey='id' rowHoverable={true} size={"middle"}></Table>
+            <Table className={'shadow border-1 border-gray-200 rounded-t-md'} dataSource={data} columns={columns} pagination={false} scroll={{y: 640}} virtual rowKey='id' rowHoverable={true} size={"middle"}></Table>
         </div>
     )
 }

@@ -7,14 +7,16 @@ import ManagementPanel from "../components/ManagementPanel.jsx";
 
 export default function Dashboard() {
     return (
-        <Content className={"flex flex-col h-screen mt-2"}>
-            <div className={"flex justify-end mb-2"}>
-                <Button icon={<PlusOutlined/>}>Create</Button>
+        <div className={"flex flex-col gap-y-7 mt-5"}>
+            <div>
+                <div className={"flex justify-end mb-1"}>
+                    <Button icon={<PlusOutlined/>}>Create</Button>
+                </div>
+                <GuardsTable/>
             </div>
-            <GuardsTable/>
             <div>
                 <ManagementPanel />
             </div>
-        </Content>
+        </div>
     )
 }

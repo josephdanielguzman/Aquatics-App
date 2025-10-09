@@ -1,13 +1,13 @@
 
 export default function Date() {
     return (
-        <div className={"flex justify-between font-serif"}>
+        <div className={"flex justify-between font-sans font-semibold text-blue-950"}>
             <div >
-                <p className={"text-xl"}>MONDAY</p>
-                <p>September 2, 2025</p>
+                <p className={"text-2xl"}>Monday</p>
+                <p className={'font-normal'}>September 2, 2025</p>
             </div>
-            <div className={"text-xl"}>
-                12:02 PM
+            <div className={"text-2xl"}>
+                12:01 PM
             </div>
         </div>
     )

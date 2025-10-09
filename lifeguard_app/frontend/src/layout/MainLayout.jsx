@@ -9,17 +9,14 @@ const {Sider, Content} = Layout;
 
 export default function MainLayout() {
     return(
-        <Layout>
-            <Sider>
-                <SideNav />
-            </Sider>
-            <Content className={"flex flex-col h-screen p-4 m-3"}>
-                    <div className={'mb-3'}>
-                        <Date />
-                    </div>
-                   <Outlet />
+        <Layout className={'h-screen'}>
+                <Sider>
+                    <SideNav />
+                </Sider>
+            <Content className={"flex flex-col p-4 overflow-y-auto"}>
+                <Date />
+                <Outlet />
             </Content>
         </Layout>
-
     )
 }
