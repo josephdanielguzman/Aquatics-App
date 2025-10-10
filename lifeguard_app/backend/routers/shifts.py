@@ -1,7 +1,7 @@
-from .. import models, schemas
+from lifeguard_app.backend import schemas, models
 from fastapi import  Depends, status, APIRouter, HTTPException
 from sqlalchemy.orm import Session
-from ..db import get_db
+from lifeguard_app.backend.db import get_db
 
 router = APIRouter(prefix = "/shifts", tags = ["shifts"])
 

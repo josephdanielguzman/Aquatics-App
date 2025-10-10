@@ -1,7 +1,7 @@
-from .. import schemas, models
+from lifeguard_app.backend import schemas, models
 from fastapi import HTTPException, Depends, APIRouter, status
 from sqlalchemy.orm import Session
-from ..db import get_db
+from lifeguard_app.backend.db import get_db
 
 #TODO: finish breaks endpoint
 

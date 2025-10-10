@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from lifeguard_app.routers import guards, assignments, shifts, rotations, breaks
+from .routers import shifts, rotations, breaks, guards, assignments
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
