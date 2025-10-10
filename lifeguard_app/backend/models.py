@@ -1,4 +1,4 @@
-from .db import Base
+from lifeguard_app.backend.db import Base
 from sqlalchemy import Column, String, Integer, ForeignKey, Boolean
 #stores models which create database tables
 

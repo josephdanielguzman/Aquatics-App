@@ -30,3 +30,11 @@ class BreakEnd(BaseModel):
 
 class BreakResponse(BreakStart, BreakEnd):
     id: int
+
+class StatusResponse(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    started_at: str
+    rotation: str
+    spot_name: str
