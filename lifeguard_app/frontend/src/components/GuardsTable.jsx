@@ -12,6 +12,20 @@ export default function GuardsTable(props){
 
     const [selectedId, setSelectedId] = useState(null);
 
+    const findBreak = (record, breakType) => {
+        const b = record.breaks?.find(b => b.type === breakType);
+
+        if(!b) {
+            return (<p><CloseOutlined className={'!text-red-500'}/> Not Taken</p>)
+        } else {
+            if(b.ended) {
+                return (<p><CheckOutlined className={'!text-green-700'}/> {b.started} - {b.ended}</p>)
+            } else {
+                return (<p><ClockCircleOutlined className={'!text-amber-500'}/> {b.started} - --:--</p>)
+            }
+        }
+    }
+
     const handleClick = (recordId) => {
         if(recordId === selectedId){
             setSelectedId(null);
@@ -58,33 +72,23 @@ export default function GuardsTable(props){
         {
             title: 'Break 1',
             key: 'break1',
-            render: (_, record) =>
-                <p>
-                    <ClockCircleOutlined className={'!text-amber-500'}/> 10:20 - --:--
-                </p>
-
+            render: (_, record) => findBreak(record, 1)
         },
         {
             title: 'Lunch',
             key: 'lunch',
-            render: (_, record) =>
-                <p>
-                    <CheckOutlined style={{color: 'green'}}/> 10:20 - 10:30
-                </p>
+            render: (_, record) => findBreak(record, 2)
         },
         {
             title: 'Break 2',
             key: 'break2',
-            render: (_, record) =>
-                <p>
-                    <CloseOutlined style={{color: 'red'}}/> Not Taken
-                </p>
-
+            render: (_, record) => findBreak(record, 3)
         },
         {
             title:'',
             key: 'manage',
             width: 110,
+            className: 'button-column',
 
             render: (_, record) =>
             <Button

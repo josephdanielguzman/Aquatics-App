@@ -6,6 +6,7 @@ import { Content } from "antd/es/layout/layout.js";
 import ManagementPanel from "../components/ManagementPanel.jsx";
 import {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
+import InitializationPanel from "../components/InitializationPanel.jsx";
 
 
 export default function Dashboard() {
@@ -15,22 +16,20 @@ export default function Dashboard() {
         queryFn: getGuards
     })
 
+    const [showInit, setInit] = useState(false);
     const [showManagement, setShowManagement] = useState(false);
     const [guardId, setSelectedGuardId] = useState(null);
     const selectedGuard = data?.find(guard => guard.guard_id === guardId);
 
     return (
         <div className={"flex flex-col gap-y-7 mt-5"}>
-            <div>
-                <div className={"flex justify-end mb-1"}>
-                    <Button icon={<PlusOutlined/>}>Create</Button>
-                </div>
-                <GuardsTable data={data} onGuardSelect={setShowManagement} setSelectedGuardId={setSelectedGuardId} />
+            <div className={"flex justify-end mb-1"}>
+                <Button onClick={() => setInit(!showInit)} icon={<PlusOutlined/>}>Create</Button>
             </div>
+            {showInit && <InitializationPanel />}
+            <GuardsTable data={data} onGuardSelect={setShowManagement} setSelectedGuardId={setSelectedGuardId} />
             {showManagement && (
-                <div>
                 <ManagementPanel guard={selectedGuard}/>
-                </div>
             )}
         </div>
     )
