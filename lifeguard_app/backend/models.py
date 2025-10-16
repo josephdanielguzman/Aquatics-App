@@ -1,5 +1,5 @@
 from lifeguard_app.backend.db import Base
-from sqlalchemy import Column, String, Integer, ForeignKey, Boolean
+from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, Time
 #stores models which create database tables
 
 class Guards(Base):
@@ -14,8 +14,8 @@ class Breaks(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     type = Column(Integer, ForeignKey("break_types.id", ondelete="CASCADE"), nullable=False)
-    start_time = Column(String, nullable=False)
-    end_time = Column(String, nullable=True)
+    start_time = Column(Time, nullable=False)
+    end_time = Column(Time, nullable=True)
 
     guard_id = Column(Integer, ForeignKey("guards.id", ondelete="CASCADE"), nullable=False)
 
@@ -33,8 +33,8 @@ class Shifts(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     guard_id = Column(Integer, ForeignKey("guards.id", ondelete="CASCADE"), nullable=False)
-    started_at = Column(String, nullable=False)
-    ended_at = Column(String, nullable=True)
+    started_at = Column(Time, nullable=False)
+    ended_at = Column(Time, nullable=True)
 
 class Rotations(Base):
     __tablename__ = "rotations"
@@ -48,7 +48,7 @@ class Assignments(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     shift_id = Column(Integer, ForeignKey("shifts.id", ondelete="CASCADE"), nullable=False)
     spot_id = Column(Integer, ForeignKey("spots.id", ondelete="CASCADE"), nullable=False)
-    time = Column(String, nullable=False)
+    time = Column(Time, nullable=False)
 
 class BreakTypes(Base):
     __tablename__ = "break_types"
