@@ -10,7 +10,23 @@ router = APIRouter(prefix="/breaks", tags=["breaks"])
 
 @router.post("/", response_model=schemas.BreakResponse, status_code=status.HTTP_201_CREATED)
 def start_break(new_break: schemas.BreakStart, db: Session = Depends(get_db)):
+    """ Creates a new break. """
     new_break = models.Breaks(**new_break.dict())
+
+    # break conflicts
+    open_break = db.query(models.Breaks).filter(new_break.guard_id == models.Breaks.guard_id,
+                                                models.Breaks.end_time.is_(None)).first()
+    same_break = db.query(models.Breaks).filter(new_break.guard_id == models.Breaks.guard_id,
+                                                new_break.type == models.Breaks.type).first()
+
+    # prevent starting an already completed break
+    if same_break:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Break already exists")
+
+    # prevent starting a new break if an unfinished one exists
+    if open_break:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Previous break in progress")
+
     db.add(new_break)
     db.commit()
     db.refresh(new_break)
@@ -32,6 +48,7 @@ def end_break(id: int, break_end: schemas.BreakEnd, db: Session = Depends(get_db
     if duration_datetime < 10:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Break less than 10 minutes")
 
+    # break doesn't exist
     if not update_break:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Break not found")
 
