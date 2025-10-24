@@ -47,7 +47,7 @@ class Assignments(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     shift_id = Column(Integer, ForeignKey("shifts.id", ondelete="CASCADE"), nullable=False)
-    spot_id = Column(Integer, ForeignKey("spots.id", ondelete="CASCADE"), nullable=False)
+    spot_id = Column(Integer, ForeignKey("spots.id", ondelete="CASCADE"), nullable=True)
     time = Column(Time, nullable=False)
 
 class BreakTypes(Base):
