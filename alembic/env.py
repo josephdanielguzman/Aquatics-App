@@ -4,8 +4,8 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from lifeguard_app.models import Base
-from lifeguard_app.config import settings
+from lifeguard_app.backend.db import Base
+from lifeguard_app.backend.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
