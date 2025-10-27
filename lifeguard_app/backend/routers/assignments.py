@@ -19,7 +19,7 @@ def create_assignment(assignment: schemas.Assignment, db: Session = Depends(get_
 
     # todo: only accounts for current day, needs modification for mult shifts
     if latest_spot_assignment:
-        # Find most recent assignment of that shift
+        # Find the most recent assignment of that shift
         latest_assignment = (db.query(models.Assignments)
                              .filter(models.Assignments.shift_id == latest_spot_assignment.shift_id)
                              .order_by(models.Assignments.time.desc())
@@ -37,3 +37,38 @@ def create_assignment(assignment: schemas.Assignment, db: Session = Depends(get_
     db.refresh(new_assignment)
 
     return new_assignment
+
+@router.post("/replace/{id}", status_code=status.HTTP_201_CREATED, response_model=schemas.Assignment)
+def replace_guard(id: int, replacement_guard: schemas.Assignment, db: Session = Depends(get_db)):
+
+    # --- Retrieve target record ---
+
+    # Assignment of guard whose spot is to be swapped with
+    old_guard = (db.query(models.Assignments)
+                 .join(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
+                 .join(models.Guards, models.Shifts.guard_id == models.Guards.id)
+                 .filter(models.Guards.id == id)
+                 .order_by(models.Assignments.time.desc())
+                 .first())
+
+    # --- Error handling ---
+
+    if not old_guard:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Assignment not found")
+
+    # --- Update and persist records ---
+
+    # todo: test swapping with a guard with not spot, maybe pass in spot_id in schema to prevent error??
+    # Set new guard's spot to the old guard's spot
+    replacement_guard_assignment = models.Assignments(**replacement_guard.dict())
+    replacement_guard_assignment.spot_id = old_guard.spot_id
+
+    # Create new record for old guard with no spot
+    old_guard_assignment = models.Assignments(shift_id=old_guard.shift_id, spot_id=None, time=replacement_guard.time)
+
+    db.add(replacement_guard_assignment)
+    db.add(old_guard_assignment)
+    db.commit()
+
+    return replacement_guard_assignment
+
