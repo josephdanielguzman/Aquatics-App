@@ -44,8 +44,8 @@ def start_break(new_break: schemas.BreakStart, db: Session = Depends(get_db)):
 @router.patch("/end_break/{id}", response_model=schemas.BreakResponse)
 def end_break(id: int, break_end: schemas.BreakEnd, db: Session = Depends(get_db)):
     """Updates the end time of an existing break given the break id."""
-
     # --- Retrieve target record ---
+
     update_break = db.query(models.Breaks).filter(models.Breaks.id == id, models.Breaks.end_time.is_(None)).first()
 
     # --- Error handling --

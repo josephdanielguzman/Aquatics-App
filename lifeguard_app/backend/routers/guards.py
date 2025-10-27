@@ -7,12 +7,6 @@ from sqlalchemy import func
 
 router = APIRouter(prefix='/guards', tags=['Guards'])
 
-@router.get("/")
-def get_guards(db: Session = Depends(get_db)):
-    """Returns all guards."""
-    guards = db.query(models.Guards).order_by(models.Guards.first_name).all()
-    return guards
-
 @router.get("/on_shift")
 def get_guard_status(db: Session = Depends(get_db)):
     """Returns all necessary information of guards currently on shift."""
@@ -24,17 +18,23 @@ def get_guard_status(db: Session = Depends(get_db)):
                       models.Shifts.id.label('shift_id'),
                       models.Shifts.started_at.label('clock_in'),
                       models.Shifts.ended_at.label('clock_out'),
-                       models.Rotations.id.label('rotation'),
+                      models.Rotations.name.label('rotation'),
                       models.Spots.name.label('spot_name'))
               .join(models.Shifts, models.Guards.id == models.Shifts.guard_id)
-              .join(models.Assignments, models.Shifts.id == models.Assignments.shift_id)
-              .join(models.Spots, models.Assignments.spot_id == models.Spots.id)
-              .join(models.Rotations, models.Spots.rotation_id == models.Rotations.id)
+              .outerjoin(models.Assignments, models.Shifts.id == models.Assignments.shift_id)
+              .outerjoin(models.Spots, models.Assignments.spot_id == models.Spots.id)
+              .outerjoin(models.Rotations, models.Spots.rotation_id == models.Rotations.id)
               .distinct(models.Guards.id) # single entry per guard
-              .order_by(models.Guards.id, models.Assignments.time.desc()) # most recent assignment
+              .order_by(models.Guards.id, models.Assignments.id.desc()) # most recent assignment
               .all())
 
+    # --- Return empty array if no guards ---
+
+    if not guards:
+        return []
+
     # --- Retrieve breaks for guards ---
+
     guard_ids = [guard.id for guard in guards]
     breaks = db.query(models.Breaks).where(models.Breaks.guard_id.in_(guard_ids)).all()
 
@@ -67,14 +67,20 @@ def get_guard_status(db: Session = Depends(get_db)):
 @router.get("/available")
 def get_available_guards(db: Session = Depends(get_db)):
     """Returns all guards currently not on shift."""
+    # --- Retrieve guards not on shift ---
+
     guards = (db.query(models.Guards.id,
                        func.concat_ws(' ', models.Guards.first_name, models.Guards.last_name).label('name'))
               .outerjoin(models.Shifts, models.Guards.id == models.Shifts.guard_id)
               .filter(models.Shifts.id.is_(None))
               .all())
 
+    # --- Error handling ---
+
     if not guards:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Guards not found")
+
+    # --- Build and return response ---
 
     return [
         {
@@ -88,6 +94,7 @@ def get_available_guards(db: Session = Depends(get_db)):
 def get_guard(id: int, db: Session = Depends(get_db)):
     """Returns guard with specified id."""
     guard = db.query(models.Guards).where(models.Guards.id == id).first()
+
     if not guard:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Guard not found")
 
