@@ -58,5 +58,6 @@ class BreakTypes(Base):
 class Users(Base):
     __tablename__ = "users"
 
-    username = Column(String, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
+    username = Column(String, nullable=False)
     password = Column(String, nullable=False)
