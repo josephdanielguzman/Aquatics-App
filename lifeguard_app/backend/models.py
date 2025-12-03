@@ -1,6 +1,5 @@
 from lifeguard_app.backend.db import Base
 from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, Time
-#stores models which create database tables
 
 class Guards(Base):
     __tablename__ = "guards"
@@ -55,3 +54,9 @@ class BreakTypes(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     type = Column(String, nullable=False)
+
+class Users(Base):
+    __tablename__ = "users"
+
+    username = Column(String, primary_key=True, nullable=False)
+    password = Column(String, nullable=False)
