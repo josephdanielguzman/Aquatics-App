@@ -2,18 +2,34 @@ from lifeguard_app.backend import schemas, models
 from fastapi import  Depends, status, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 from lifeguard_app.backend.db import get_db
+from .. import oauth2
 
 router = APIRouter(prefix = "/shifts", tags = ["shifts"])
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ShiftResponse)
-def clock_in(shift: schemas.ShiftClockIn, db: Session = Depends(get_db)):
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    response_model=schemas.ShiftResponse
+)
+def clock_in(
+        shift: schemas.ShiftClockIn,
+        user: dict =  Depends(oauth2.get_current_user),
+        db: Session = Depends(get_db)
+):
     """Create a new shift."""
     # --- Error handling ---
 
     # Prevent creating a new shift with one still unfinished
-    open_shift = db.query(models.Shifts).filter(shift.guard_id == models.Shifts.guard_id).first()
+    open_shift = (
+        db.query(models.Shifts)
+        .filter(shift.guard_id == models.Shifts.guard_id)
+        .first()
+    )
     if open_shift:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Guard already on shift.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Guard already on shift."
+        )
 
     # --- Create and persist new record ---
 
@@ -24,19 +40,32 @@ def clock_in(shift: schemas.ShiftClockIn, db: Session = Depends(get_db)):
 
     return new_shift
 
+# todo: turn into a patch
 @router.post("/{id}:clock-out", response_model=schemas.ShiftResponse)
-def clock_out(id: int, shift: schemas.ShiftClockOut, db: Session = Depends(get_db)):
+def clock_out(
+        id: int,
+        shift: schemas.ShiftClockOut,
+        db: Session = Depends(get_db),
+        user: dict = Depends(oauth2.get_current_user)
+):
     """End the shift of a given id."""
     # --- Retrieve target record ---
 
     # Shift to be ended
-    update_shift = db.query(models.Shifts).filter(models.Shifts.id == id).first()
+    update_shift = (
+        db.query(models.Shifts)
+        .filter(models.Shifts.id == id)
+        .first()
+    )
 
     # --- Error handling ---
 
     # Prevent ending a shift that does not exist
     if not update_shift:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = f"Shift {id} not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail = f"Shift {id} not found"
+        )
 
     # --- Update and persist changes ---
 

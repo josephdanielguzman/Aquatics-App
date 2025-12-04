@@ -58,3 +58,19 @@ class RotationsResponse(BaseModel):
     id: int
     rotation_name: str
     spot_name:str
+
+class UserCredentials(BaseModel):
+    username: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    id: int
+    username: str
