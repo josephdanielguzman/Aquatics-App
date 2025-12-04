@@ -4,7 +4,11 @@ from sqlalchemy.orm import sessionmaker
 from lifeguard_app.backend.config import settings
 #initializes a connection to database
 
-SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.db_username}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}'
+SQLALCHEMY_DATABASE_URL = (
+    f'postgresql://{settings.db_username}'
+    f':{settings.db_password}@{settings.db_host}'
+    f':{settings.db_port}/{settings.db_name}'
+)
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
