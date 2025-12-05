@@ -2,7 +2,7 @@ import schemas, models
 from fastapi import Depends, status, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 from db import get_db
-from .. import oauth2
+import oauth2
 
 router = APIRouter(
     prefix="/assignments",
