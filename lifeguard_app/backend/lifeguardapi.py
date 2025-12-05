@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import shifts, rotations, breaks, guards, assignments, auth, user
+from routers import shifts, rotations, breaks, guards, assignments, auth, user
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 

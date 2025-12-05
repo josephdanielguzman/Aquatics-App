@@ -1,6 +1,6 @@
 import jwt
 from datetime import datetime, timedelta, UTC
-from . import schemas
+import schemas
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from config import settings
