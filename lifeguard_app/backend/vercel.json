@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "lifeguard_app/backend/lifeguardapi.py",
+      "src": "lifeguardapi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "lifeguard_app/backend/lifeguardapi.py"
+      "dest": "lifeguardapi.py"
     }
   ]
 }
