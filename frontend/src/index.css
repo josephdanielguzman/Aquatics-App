@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+.ant-table-cell {
+  padding-top: 12px !important;
+    padding-left: 15px !important;
+    font-size: 15px !important;
+}
+
+/* Target ONLY header cells */
+.ant-table-thead > tr > th.ant-table-cell {
+    padding-bottom: 10px !important;
+    color: black;
+    background-color: #f7f7f7 !important;
+}
+
+.button-column {
+    padding-top: 10px !important;
+}
