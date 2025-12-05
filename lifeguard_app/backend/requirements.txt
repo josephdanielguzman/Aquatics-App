@@ -1,3 +1,5 @@
+uliweb-alembic
+pyjwt
 alembic==1.16.5
 annotated-types==0.7.0
 anyio==4.10.0
