@@ -1,9 +1,9 @@
-from lifeguard_app.backend import schemas, models
+import schemas, models
 from fastapi import HTTPException, Depends, APIRouter, status
 from sqlalchemy.orm import Session
-from lifeguard_app.backend.db import get_db
+from db import get_db
 from datetime import datetime
-from .. import oauth2
+import oauth2
 
 router = APIRouter(prefix="/breaks", tags=["breaks"])
 
