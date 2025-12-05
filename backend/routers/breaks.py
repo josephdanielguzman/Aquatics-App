@@ -1,9 +1,9 @@
-import schemas, models
+from lifeguard_app.backend import schemas, models
 from fastapi import HTTPException, Depends, APIRouter, status
 from sqlalchemy.orm import Session
-from db import get_db
+from lifeguard_app.backend.db import get_db
 from datetime import datetime
-import oauth2
+from .. import oauth2
 
 router = APIRouter(prefix="/breaks", tags=["breaks"])
 
@@ -33,8 +33,8 @@ def start_break(
     same_break = (
         db.query(models.Breaks)
         .filter(
-            new_break.guard_id == models.Breaks.guard_id,
-            new_break.type == models.Breaks.type)
+        new_break.guard_id == models.Breaks.guard_id,
+                new_break.type == models.Breaks.type)
         .first()
     )
 

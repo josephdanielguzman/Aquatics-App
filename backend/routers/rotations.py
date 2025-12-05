@@ -2,9 +2,9 @@ from collections import defaultdict
 from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from db import get_db
-import models
-import oauth2
+from lifeguard_app.backend.db import get_db
+from lifeguard_app.backend import models
+from .. import oauth2
 
 router = APIRouter(prefix="/rotations", tags=["rotations"])
 

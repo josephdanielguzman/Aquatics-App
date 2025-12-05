@@ -1,8 +1,8 @@
-import schemas, models
+from lifeguard_app.backend import schemas, models
 from fastapi import Depends, status, APIRouter, HTTPException
 from sqlalchemy.orm import Session
-from db import get_db
-import oauth2
+from lifeguard_app.backend.db import get_db
+from .. import oauth2
 
 router = APIRouter(
     prefix="/assignments",
