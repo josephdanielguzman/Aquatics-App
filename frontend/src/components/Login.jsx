@@ -1,7 +1,6 @@
 import { useLogin } from '/src/hooks/useAuth.js'
 import {Button, Form, Input} from 'antd'
-import blueBuoyLogo from '/src/assets/blue-buoy.png'
-
+import lifeSaver from '/src/assets/lifeCirc.png'
 export default function Login() {
 
     const loginMutation = useLogin()
@@ -22,7 +21,7 @@ export default function Login() {
             <div className={"flex flex-col bg-slate-900 w-120 h-140 rounded-4xl p-10 gap-y-15 shadow-2xl"}>
                 <div className={"flex justify-center gap-x-3"}>
                     <img
-                        src={blueBuoyLogo}
+                        src={lifeSaver}
                         alt="lifeguard buoy"
                         className={"pt-2 h-12"}
                     />
