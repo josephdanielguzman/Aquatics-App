@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "https://aquatics-app-u6ol.vercel.app",
+    "https://*.vercel.app",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
