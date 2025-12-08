@@ -16,3 +16,7 @@
 .button-column {
     padding-top: 10px !important;
 }
+
+.form-text {
+  @apply text-white;
+}
