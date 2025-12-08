@@ -21,7 +21,7 @@ export default function Login() {
             <div className={"flex flex-col bg-slate-900 w-120 h-140 rounded-4xl p-10 gap-y-15 shadow-2xl"}>
                 <div className={"flex justify-center gap-x-3"}>
                     <img
-                        src={"/src/assets/blue-buoy.png"}
+                        src={"src/assets/blue-buoy.png"}
                         alt="lifeguard buoy"
                         className={"pt-2 h-12"}
                     />
