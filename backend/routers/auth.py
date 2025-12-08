@@ -44,3 +44,9 @@ def login(
     )
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post('/verify-token')
+def verify_token(
+    user: dict = Depends(oauth2.get_current_user)
+):
+    return {"valid": True, "user": user}
