@@ -1,9 +1,8 @@
-import {getAvailableGuards, getGuardsOnShift} from "../api/guards.js";
+import {getAvailableGuards, getGuardsOnShift} from "/src/api/guards.js";
 import {useQuery} from "@tanstack/react-query";
-import {queryKeys} from "../constants/queryKeys.jsx";
+import {queryKeys} from "/src/constants/queryKeys.jsx";
 
 export const useGuardsOnShift = () => {
-    console.log("Use guards on shift...")
     return useQuery({
         queryKey: queryKeys.GUARDS.ON_SHIFT,
         queryFn: getGuardsOnShift,

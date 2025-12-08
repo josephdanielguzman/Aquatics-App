@@ -1,5 +1,5 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {login, verifyToken} from "../api/auth.js";
+import {login, verifyToken} from "/src/api/auth.js";
 import {message} from "antd";
 import { useNavigate } from "react-router-dom";
 

@@ -2,12 +2,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import Dashboard from './pages/Dashboard.jsx'
-import Rotations from './pages/Rotations.jsx'
-import Reports from "./pages/Reports.jsx"
-import Login from "./components/Login.jsx"
-import './index.css'
-import Protected from "./components/Protected.jsx";
+import Dashboard from '/src/pages/Dashboard.jsx'
+import Rotations from '/src/pages/Rotations.jsx'
+import Reports from "/src/pages/Reports.jsx"
+import Login from "/src/components/Login.jsx"
+import '/src/index.css'
+import Protected from "/src/components/Protected.jsx";
 
 const queryClient = new QueryClient()
 

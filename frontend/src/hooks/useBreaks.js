@@ -1,6 +1,6 @@
-import {createBreak, updateBreak} from '../api/breaks.js'
+import {createBreak, updateBreak} from '/src/api/breaks.js'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '../constants/queryKeys.jsx'
+import { queryKeys } from '/src/constants/queryKeys.jsx'
 import { message } from 'antd'
 
 export const useCreateBreak = () => {

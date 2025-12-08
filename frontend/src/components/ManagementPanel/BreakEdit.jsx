@@ -1,6 +1,6 @@
 import {Button, Form, message, TimePicker} from 'antd';
 import {ClockCircleOutlined} from "@ant-design/icons";
-import {useCreateBreak, useUpdateBreak} from "../../hooks/useBreaks.js";
+import {useCreateBreak, useUpdateBreak} from "/src/hooks/useBreaks.js";
 import dayjs from 'dayjs'
 
 export default function BreakEdit(props) {

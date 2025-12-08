@@ -1,4 +1,4 @@
-import { api } from './axios.js'
+import { api } from '/src/api/axios.js'
 
 export const getGuardsOnShift = async () => {
     const { data } = await api.get('/guards/on_shift')

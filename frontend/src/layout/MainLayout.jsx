@@ -1,6 +1,6 @@
 import { Layout} from 'antd';
-import SideNav from '../components/SideNav.jsx';
-import HeaderDate from "../components/HeaderDate.jsx";
+import SideNav from '/src/components/SideNav.jsx';
+import HeaderDate from "/src/components/HeaderDate.jsx";
 import { Outlet } from "react-router-dom"
 
 const {Sider, Content} = Layout;

@@ -1,7 +1,7 @@
-import { useVerifyToken } from "../hooks/useAuth.js";
+import { useVerifyToken } from "/src/hooks/useAuth.js";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import MainLayout from "../layout/MainLayout.jsx";
+import MainLayout from "/src/layout/MainLayout.jsx";
 
 export default function Protected() {
 

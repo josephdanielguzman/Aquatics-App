@@ -1,7 +1,7 @@
-import VioletRotation from '../components/Rotations/VioletRotation.jsx'
-import GreenRotation from "../components/Rotations/GreenRotation.jsx";
-import YellowRotation from "../components/Rotations/YellowRotation.jsx"
-import {useRotations} from '../hooks/useRotations'
+import VioletRotation from '/src/components/Rotations/VioletRotation.jsx'
+import GreenRotation from "/src/components/Rotations/GreenRotation.jsx";
+import YellowRotation from "/src/components/Rotations/YellowRotation.jsx"
+import {useRotations} from '/src/hooks/useRotations'
 import {Skeleton} from "antd";
 
 export default function Rotations() {

@@ -1,7 +1,7 @@
 import {useQueryClient} from "@tanstack/react-query";
 import {useMutation} from "@tanstack/react-query";
-import {createAssignment, replaceAssignment} from "../api/assignments.js";
-import { queryKeys } from "../constants/queryKeys.jsx";
+import {createAssignment, replaceAssignment} from "/src/api/assignments.js";
+import { queryKeys } from "/src/constants/queryKeys.jsx";
 import { message } from "antd";
 
 export const useCreateAssignment = () => {

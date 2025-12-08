@@ -1,4 +1,4 @@
-import { useLogin } from '../hooks/useAuth.js'
+import { useLogin } from '/src/hooks/useAuth.js'
 import {Button, Form, Input} from 'antd'
 import blueBuoyLogo from '/src/assets/blue-buoy.png'
 

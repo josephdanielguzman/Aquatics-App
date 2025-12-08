@@ -1,12 +1,11 @@
 import {Button} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
-import GuardsTable from "../components/GuardsTable.jsx";
-import ManagementPanel from "../components/ManagementPanel.jsx";
+import GuardsTable from "/src/components/GuardsTable.jsx";
+import ManagementPanel from "/src/components/ManagementPanel.jsx";
 import {useState} from "react";
-import InitializationPanel from "../components/InitializationPanel.jsx";
-import {useAvailableGuards, useGuardsOnShift} from "../hooks/useGuards.js";
+import InitializationPanel from "/src/components/InitializationPanel.jsx";
+import { useGuardsOnShift} from "/src/hooks/useGuards.js";
 import {Skeleton} from "antd";
-import {useRotations} from "../hooks/useRotations.js";
 
 export default function Dashboard() {
 

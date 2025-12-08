@@ -1,4 +1,4 @@
-import { api } from './axios.js'
+import { api } from '/src/api/axios.js'
 
 export const login = async(payload) => {
     const formData = new URLSearchParams()

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {createShift} from "../api/shifts.js";
+import {createShift} from "/src/api/shifts.js";
 import { message } from 'antd';
-import { queryKeys} from "../constants/queryKeys.jsx";
+import { queryKeys} from "/src/constants/queryKeys.jsx";
 
 export const useCreateShift = (options = {}) => {
     const queryClient = useQueryClient()

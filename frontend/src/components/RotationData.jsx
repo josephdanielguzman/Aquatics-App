@@ -1,6 +1,5 @@
 import {Steps} from "antd"
 import {UserOutlined} from "@ant-design/icons";
-import {useRotations} from "../hooks/useRotations.js";
 
 export default function RotationData(props) {
 

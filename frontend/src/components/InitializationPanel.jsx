@@ -1,9 +1,9 @@
 import {AutoComplete, Button, Cascader, Form, Skeleton, TimePicker, Popconfirm} from 'antd'
 import {CloseSquareFilled, UserAddOutlined} from "@ant-design/icons";
-import {useCreateShift} from "../hooks/useShifts.js";
-import {useCreateAssignment, useReplaceAssignment} from "../hooks/useAssignments.js";
-import {useAvailableGuards, useGuardsOnShift} from "../hooks/useGuards.js";
-import {useRotations} from "../hooks/useRotations.js";
+import {useCreateShift} from "/src/hooks/useShifts.js";
+import {useCreateAssignment, useReplaceAssignment} from "/src/hooks/useAssignments.js";
+import {useAvailableGuards, useGuardsOnShift} from "/src/hooks/useGuards.js";
+import {useRotations} from "/src/hooks/useRotations.js";
 import { useState } from "react";
 
 export default function InitializationPanel() {
@@ -136,14 +136,30 @@ export default function InitializationPanel() {
     return (
         <div className={'mb-7 bg-white rounded-md shadow h-auto font-semibold'}>
             <div className={'p-3 border-b-1 border-gray-200'}>
-                <p className={'text-xl text-neutral-800'}>Initialization Panel</p>
+                <p className={'text-xl text-neutral-800'}>
+                    Initialization Panel
+                </p>
             </div>
             <div className={'p-4 pb-1'}>
-                <Form name={'guardInit'} form={form} layout={'vertical'} onFinish={handleSubmit}>
-                    <Form.Item className={'!bg-blue-100 rounded-md !p-4'} label={null}>
-                        <p className={'text-lg text-blue-900'}><UserAddOutlined /> Create Lifeguard:</p>
+                <Form
+                    name={'guardInit'}
+                    form={form}
+                    layout={'vertical'}
+                    onFinish={handleSubmit}
+                >
+                    <Form.Item
+                        className={'!bg-blue-100 rounded-md !p-4'}
+                        label={null}
+                    >
+                        <p className={'text-lg text-blue-900'}>
+                            <UserAddOutlined /> Create Lifeguard:
+                        </p>
                     </Form.Item>
-                    <Form.Item label={'Name:'} name={'name'} rules={[{required:true}]}>
+                    <Form.Item
+                        label={'Name:'}
+                        name={'name'}
+                        rules={[{required:true}]}
+                    >
                         <AutoComplete className={'font-normal'}
                                       options={guards}
                                       filterOption={(inputValue, option) =>

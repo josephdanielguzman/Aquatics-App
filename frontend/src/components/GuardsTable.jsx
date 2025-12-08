@@ -5,8 +5,8 @@ import {
     CloseOutlined,
 } from "@ant-design/icons";
 import {useState} from "react";
-import {useGuardsOnShift} from "../hooks/useGuards.js";
-import { formatTime } from "../utils/formatTime.js";
+import {useGuardsOnShift} from "/src/hooks/useGuards.js";
+import { formatTime } from "/src/utils/formatTime.js";
 
 export default function GuardsTable(props){
 
