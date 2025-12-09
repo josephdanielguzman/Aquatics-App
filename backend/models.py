@@ -72,6 +72,7 @@ class Assignments(Base):
         nullable=True
     )
     time = Column(Time, nullable=False)
+    active = Column(Boolean, nullable=False, default=True)
 
 class BreakTypes(Base):
     __tablename__ = "break_types"
