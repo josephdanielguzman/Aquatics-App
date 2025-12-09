@@ -46,6 +46,16 @@ def start_break(
         .first()
     )
 
+    # Check current spot assignment
+    spot = (
+        db.query(models.Assignments.spot_id)
+        .join(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
+        .join(models.Guards, models.Shifts.guard_id == models.Guards.id)
+        .filter(models.Guards.id == new_break.guard_id)
+        .order_by(models.Assignments.time.desc())
+        .first()
+    )
+
     # --- Error handling ---
 
     # Prevent duplicate break types
@@ -62,12 +72,25 @@ def start_break(
             detail="Previous break in progress"
         )
 
+    # Prevent starting a break if the guard is at a spot
+    if spot:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Guard currently at a spot"
+        )
+
     # Prevent starting a break that overlaps with a previous one
 
     if prev_break:
         # Convert time to datetime objects
-        prev_end_datetime = datetime.combine(datetime.today(), prev_break.end_time)
-        new_start_datetime = datetime.combine(datetime.today(), new_break.start_time)
+        prev_end_datetime = datetime.combine(
+            datetime.today(),
+            prev_break.end_time
+        )
+        new_start_datetime = datetime.combine(
+            datetime.today(),
+            new_break.start_time
+        )
         diff_datetime = new_start_datetime - prev_end_datetime
 
         if diff_datetime.total_seconds() < 0:
