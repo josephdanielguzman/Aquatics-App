@@ -6,6 +6,6 @@ export const createAssignment = async (payload) => {
 }
 
 export const replaceAssignment = async ({id, payload}) => {
-    const { data } = await api.post(`/assignments/replace/${id}`, payload)
+    const { data } = await api.patch(`/assignments/replace/${id}`, payload)
     return data
 }

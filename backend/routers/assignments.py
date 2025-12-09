@@ -57,7 +57,7 @@ def create_assignment(
 
     return new_assignment
 
-@router.post(
+@router.patch(
     "/replace/{id}",
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.Assignment
@@ -97,13 +97,11 @@ def replace_guard(
     )
     replacement_guard_assignment.spot_id = old_guard.spot_id
 
-    # Create new record for old guard with no spot
-    old_guard_assignment = models.Assignments(shift_id=old_guard.shift_id,
-                                              spot_id=None,
-                                              time=replacement_guard.time)
+    # Update record for old guard with no spot
+    old_guard.active = False
+    old_guard.spot_id = None
 
     db.add(replacement_guard_assignment)
-    db.add(old_guard_assignment)
     db.commit()
 
     return replacement_guard_assignment
