@@ -52,8 +52,8 @@ def start_break(
         .join(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
         .join(models.Guards, models.Shifts.guard_id == models.Guards.id)
         .filter(models.Guards.id == new_break.guard_id)
-        .order_by(models.Assignments.time.desc())
-        .first()
+        .filter(models.Assignments.active.is_(True))
+        .scalar()
     )
 
     # --- Error handling ---
@@ -72,15 +72,7 @@ def start_break(
             detail="Previous break in progress"
         )
 
-    # Prevent starting a break if the guard is at a spot
-    if spot:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Guard currently at a spot"
-        )
-
     # Prevent starting a break that overlaps with a previous one
-
     if prev_break:
         # Convert time to datetime objects
         prev_end_datetime = datetime.combine(
@@ -93,11 +85,18 @@ def start_break(
         )
         diff_datetime = new_start_datetime - prev_end_datetime
 
-        if diff_datetime.total_seconds() < 0:
+        if diff_datetime.total_seconds() < 60:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Overlap with previous break"
             )
+
+    # Prevent starting a break if the guard is at a spot
+    if spot:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Guard currently at a spot"
+        )
 
     # --- Create and persist new record ---
 
