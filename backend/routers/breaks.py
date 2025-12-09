@@ -38,6 +38,14 @@ def start_break(
         .first()
     )
 
+    # Most recent break
+    prev_break = (
+        db.query(models.Breaks)
+        .filter(new_break.guard_id == models.Breaks.guard_id)
+        .order_by(models.Breaks.end_time.desc())
+        .first()
+    )
+
     # --- Error handling ---
 
     # Prevent duplicate break types
@@ -54,7 +62,22 @@ def start_break(
             detail="Previous break in progress"
         )
 
+    # Prevent starting a break that overlaps with a previous one
+
+    if prev_break:
+        # Convert time to datetime objects
+        prev_end_datetime = datetime.combine(datetime.today(), prev_break.end_time)
+        new_start_datetime = datetime.combine(datetime.today(), new_break.start_time)
+        diff_datetime = new_start_datetime - prev_end_datetime
+
+        if diff_datetime.total_seconds() < 0:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Overlap with previous break"
+            )
+
     # --- Create and persist new record ---
+
     new_break = models.Breaks(**new_break.dict())
     db.add(new_break)
     db.commit()
