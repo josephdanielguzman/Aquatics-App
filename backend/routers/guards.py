@@ -3,7 +3,7 @@ import models
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db import get_db
-from sqlalchemy import func
+from sqlalchemy import func, or_, and_
 import oauth2
 
 router = APIRouter(prefix='/guards', tags=['Guards'])
@@ -116,3 +116,43 @@ def get_available_guards(
         }
         for g in guards
     ]
+
+@router.get("/on_shift/no_spot")
+def get_guards_no_spot(
+        db: Session = Depends(get_db),
+        current_user: dict = Depends(oauth2.get_current_user)
+):
+    """Returns all guards on shift that are not assigned to a spot."""
+
+    # --- Retrieve guards on shift with no spot ---
+
+    guards_on_shift_no_spot = (
+        db.query(models.Guards)
+        .join(models.Shifts, models.Guards.id == models.Shifts.guard_id)
+        .outerjoin(
+            models.Assignments,
+            and_( # only include active assignments
+                models.Shifts.id == models.Assignments.shift_id,
+                models.Assignments.active.is_(True)
+            )
+        )
+        .filter(
+            or_(
+                # no active assignments exist
+                models.Assignments.id.is_(None),
+
+                # active assignment is of no spot
+                models.Assignments.spot_id.is_(None)
+            )
+        )
+        .all()
+    )
+
+    # --- Return empty if no guards ---
+
+    if not guards_on_shift_no_spot:
+        return []
+
+    # --- Return response ---
+
+    return guards_on_shift_no_spot
