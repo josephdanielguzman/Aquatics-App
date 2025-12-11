@@ -9,3 +9,8 @@ export const getAvailableGuards = async () => {
     const { data } = await api.get('/guards/available')
     return data
 }
+
+export const getGuardsOnShiftNoSpot = async () => {
+    const { data } = await api.get("/guards/on_shift/no_spot")
+    return data
+}
