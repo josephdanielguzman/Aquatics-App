@@ -4,7 +4,7 @@ import BreakEdit from "/src/components/ManagementPanel/BreakEdit.jsx";
 
 export default function ManagementPanel(props) {
 
-    const noSpot = props.guard.rotation === null //todo: add validation to back end too?, spot edit only if no spot
+    const noSpot = props.guard.rotation === null
     const finalBreak = props.guard.breaks?.[2]
     const breakAvailable = !finalBreak || finalBreak.ended === null
 
@@ -21,7 +21,8 @@ export default function ManagementPanel(props) {
                         <p className={'pt-1'}><EnvironmentOutlined/> {props.guard.spot_name ? props.guard.spot_name : 'N/A'}</p>
                     </div>
                 </div>
-                {(breakAvailable) && <BreakEdit guard={props.guard}/>}
+                {(breakAvailable && noSpot) && <BreakEdit guard={props.guard}/>}
+                <SpotEdit guard={props.guard}/>
 
             </div>
         </div>
