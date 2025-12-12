@@ -1,6 +1,6 @@
 from collections import defaultdict
 import models
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from db import get_db
 from sqlalchemy import func, or_, and_
@@ -10,6 +10,7 @@ router = APIRouter(prefix='/guards', tags=['Guards'])
 
 @router.get("/on_shift")
 def get_guard_status(
+        guard_id: int | None = Query(default=None),
         db: Session = Depends(get_db),
         user: dict = Depends(oauth2.get_current_user)
 ):
@@ -17,7 +18,7 @@ def get_guard_status(
     # --- Retrieve guards on shift ---
 
     # All guards on shift and most recent spot assignment
-    guards = (
+    guards_query = (
         db.query(
             models.Guards.id,
             func.concat_ws(
@@ -38,8 +39,12 @@ def get_guard_status(
         .outerjoin(models.Rotations, models.Spots.rotation_id == models.Rotations.id)
         .distinct(models.Guards.id) # single entry per guard
         .order_by(models.Guards.id, models.Assignments.id.desc()) # most recent assignment
-        .all()
     )
+
+    if guard_id is not None:
+        guards_query = guards_query.filter(models.Guards.id == guard_id)
+
+    guards = guards_query.all()
 
     # --- Return empty array if no guards ---
 
