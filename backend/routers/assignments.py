@@ -17,38 +17,52 @@ router = APIRouter(
 def create_assignment(
         assignment: schemas.Assignment,
         db: Session = Depends(get_db),
-        current_user: dict = Depends(oauth2.get_current_user)
+        user: dict = Depends(oauth2.get_current_user)
 ):
     """Create a new spot assignment."""
-    # -- Error handling --
+    # --- Error handling ---
 
-    # Prevents double assignment
-    # Find most recent assignment of spot
+    # Prevent assignment to an occupied spot
     latest_spot_assignment = (
         db.query(models.Assignments)
-        .filter(models.Assignments.spot_id == assignment.spot_id)
+        .filter(
+            and_(
+                models.Assignments.spot_id == assignment.spot_id,
+                # Find if spot has an active assignment
+                models.Assignments.active.is_(True),
+            )
+        )
+        .first()
+    )
+    if latest_spot_assignment:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Spot already occupied"
+        )
+
+    # Prevent assignment if guard already has a spot
+    active_assignment = (
+        db.query(models.Assignments)
+        .filter(
+            and_(
+                models.Assignments.shift_id == assignment.shift_id,
+                models.Assignments.active.is_(True)
+            )
+        )
         .order_by(models.Assignments.time.desc())
         .first()
     )
-
-    # todo: only accounts for current day, needs modification for mult shifts
-    if latest_spot_assignment:
-        # Find the most recent assignment of that shift
-        latest_assignment = (
-            db.query(models.Assignments)
-            .filter(models.Assignments.shift_id == latest_spot_assignment.shift_id)
-            .order_by(models.Assignments.time.desc())
-            .first()
-        )
-
-        # If the most recent assignment for the shift is the spot attempting to assign to, raise error
-        if latest_spot_assignment.spot_id == latest_assignment.spot_id:
+    if active_assignment:
+        if active_assignment.spot_id is not None:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail="Spot currently occupied"
+                detail="Guard actively assigned to a spot"
             )
+        else:
+            # Invalidate the active no-spot assignment
+            active_assignment.active = False
 
-    # -- Create and persist new record --
+    # --- Create and persist record ---
 
     new_assignment = models.Assignments(**assignment.dict())
     db.add(new_assignment)
