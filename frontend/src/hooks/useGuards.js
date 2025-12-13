@@ -1,5 +1,5 @@
 import {getAvailableGuards, getGuardsOnShift, getGuardsOnShiftNoSpot} from "/src/api/guards.js";
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import {queryKeys} from "/src/constants/queryKeys.jsx";
 
 export const useGuardsOnShift = () => {
@@ -7,6 +7,13 @@ export const useGuardsOnShift = () => {
         queryKey: queryKeys.GUARDS.ON_SHIFT,
         queryFn: getGuardsOnShift,
         staleTime: 5 * 60 * 1000
+    })
+}
+
+export const useGuardsOnShiftOnSubmit = (options = {}) => {
+    return useMutation({
+        mutationFn: getGuardsOnShift,
+        ...options
     })
 }
 
