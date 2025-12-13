@@ -11,21 +11,41 @@ export default function VioletRotation(props) {
         setShowData(!showData)
     }
 
+    const handleRotate = () => {
+        console.log("clicked")
+    }
+
     return (
         <div>
             <div className={'bg-pink-400 border-pink-500 border-1 rounded-t-md text-white font-sans p-3 pb-2'}>
                 <div className={'flex gap-x-3'}>
                     <div className={'flex items-center pb-2'}>
-                      <Button onClick={handleClick} variant={'outlined'} color={'pink'} icon={<DownOutlined/>}></Button>
+                      <Button
+                          onClick={handleClick}
+                          variant={'outlined'}
+                          color={'pink'}
+                          icon={<DownOutlined/>}
+                      />
                     </div>
                     <div className={'flex justify-between w-full'}>
                         <div>
-                            <p className={'text-white font-sans font-bold text-xl'}>Violet</p>
-                            <p><HistoryOutlined /> Last Rotated: 10:50</p>
+                            <p className={'text-white font-sans font-bold text-xl'}>
+                                Violet
+                            </p>
+                            <p>
+                                <HistoryOutlined /> Last Rotated: 10:50
+                            </p>
                         </div>
                         <div className={'flex gap-0.5 h-min'}>
                             <TimePicker format={format} />
-                            <Button variant={'outlined'} color={'pink'} icon={<ReloadOutlined />}>Rotate</Button>
+                            <Button
+                                onClick={handleRotate}
+                                variant={'outlined'}
+                                color={'pink'}
+                                icon={<ReloadOutlined />}
+                            >
+                                Rotate
+                            </Button>
                         </div>
                     </div>
                 </div>

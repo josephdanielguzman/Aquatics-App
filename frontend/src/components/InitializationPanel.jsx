@@ -5,6 +5,7 @@ import {useCreateAssignment, useReplaceAssignment} from "/src/hooks/useAssignmen
 import {useAvailableGuards, useGuardsOnShift} from "/src/hooks/useGuards.js";
 import {useRotations} from "/src/hooks/useRotations.js";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function InitializationPanel() {
 

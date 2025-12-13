@@ -1,5 +1,6 @@
 import {EnvironmentOutlined, UserOutlined} from "@ant-design/icons";
 import BreakEdit from "/src/components/ManagementPanel/BreakEdit.jsx";
+import SpotEdit from "./ManagementPanel/SpotEdit.jsx";
 
 
 export default function ManagementPanel(props) {
