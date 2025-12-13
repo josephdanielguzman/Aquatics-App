@@ -31,7 +31,9 @@ def get_guard_status(
             models.Shifts.started_at.label('clock_in'),
             models.Shifts.ended_at.label('clock_out'),
             models.Rotations.name.label('rotation'),
-            models.Spots.name.label('spot_name')
+            models.Rotations.id.label('rotation_id'),
+            models.Spots.name.label('spot_name'),
+            models.Spots.id.label('spot_id'),
         )
         .join(models.Shifts, models.Guards.id == models.Shifts.guard_id)
         .outerjoin(models.Assignments, models.Shifts.id == models.Assignments.shift_id)
@@ -80,7 +82,9 @@ def get_guard_status(
             "clock_in": g.clock_in,
             "clock_out": g.clock_out,
             "rotation": g.rotation,
+            "rotation_id": g.rotation_id,
             "spot_name": g.spot_name,
+            "spot_id": g.spot_id,
             "breaks": breaks_by_guard.get(g.id, [])
         }
         for g in guards
