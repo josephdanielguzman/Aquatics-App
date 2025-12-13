@@ -1,7 +1,9 @@
 import { api } from '/src/api/axios.js'
 
-export const getGuardsOnShift = async () => {
-    const { data } = await api.get('/guards/on_shift')
+export const getGuardsOnShift = async ({ guardId }) => {
+    const { data } = await api.get('/guards/on_shift', {
+        params: guardId ? { guard_id: guardId } : undefined
+    })
     return data
 }
 
