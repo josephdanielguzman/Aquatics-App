@@ -24,7 +24,7 @@ export const useReplaceAssignment = (options = {}) => {
 
     return useMutation({
         mutationFn: replaceAssignment,
-        onSuccess: () => {
+        onSuccess: (data, variables, context) => {
             message.success("Assignments created successfully.")
             queryClient.invalidateQueries(queryKeys.GUARDS)
             queryClient.invalidateQueries(queryKeys.ROTATIONS)
