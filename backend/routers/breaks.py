@@ -24,7 +24,7 @@ def start_break(
     open_break = (
         db.query(models.Breaks)
         .filter(
-            new_break.guard_id == models.Breaks.guard_id,
+            new_break.shift_id == models.Breaks.shift_id,
             models.Breaks.end_time.is_(None))
         .first()
     )
@@ -33,7 +33,7 @@ def start_break(
     same_break = (
         db.query(models.Breaks)
         .filter(
-        new_break.guard_id == models.Breaks.guard_id,
+        new_break.shift_id == models.Breaks.shift_id,
                 new_break.type == models.Breaks.type)
         .first()
     )
@@ -41,18 +41,20 @@ def start_break(
     # Most recent break
     prev_break = (
         db.query(models.Breaks)
-        .filter(new_break.guard_id == models.Breaks.guard_id)
+        .filter(new_break.shift_id == models.Breaks.shift_id)
         .order_by(models.Breaks.end_time.desc())
         .first()
     )
 
     # Check current spot assignment
+
     spot = (
         db.query(models.Assignments.spot_id)
         .join(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
-        .join(models.Guards, models.Shifts.guard_id == models.Guards.id)
-        .filter(models.Guards.id == new_break.guard_id)
-        .filter(models.Assignments.active.is_(True))
+        .filter(
+            models.Shifts.id == new_break.shift_id,
+            models.Assignments.active.is_(True)
+        )
         .scalar()
     )
 

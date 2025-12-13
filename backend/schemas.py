@@ -35,7 +35,7 @@ class ShiftResponse(ShiftClockIn, ShiftClockOut):
     id: int
 
 class BreakStart(BaseModel):
-    guard_id: int
+    shift_id: int
     type: int
     start_time: TimeField
 

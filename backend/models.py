@@ -20,9 +20,9 @@ class Breaks(Base):
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=True)
 
-    guard_id = Column(
+    shift_id = Column(
         Integer,
-        ForeignKey("guards.id", ondelete="CASCADE"),
+        ForeignKey("shifts.id", ondelete="CASCADE"),
         nullable=False
     )
 

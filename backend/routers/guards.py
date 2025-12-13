@@ -55,17 +55,17 @@ def get_guard_status(
 
     # --- Retrieve breaks for guards ---
 
-    guard_ids = [guard.id for guard in guards]
+    shift_ids = [guard.shift_id for guard in guards]
     breaks = (
         db.query(models.Breaks)
-        .where(models.Breaks.guard_id.in_(guard_ids))
+        .where(models.Breaks.shift_id.in_(shift_ids))
         .all()
     )
 
     # Group breaks by guard id
     breaks_by_guard = defaultdict(list)
     for b in breaks:
-        breaks_by_guard[b.guard_id].append({
+        breaks_by_guard[b.shift_id].append({
             "id": b.id,
             "type": b.type,
             "started": b.start_time,
@@ -85,7 +85,7 @@ def get_guard_status(
             "rotation_id": g.rotation_id,
             "spot_name": g.spot_name,
             "spot_id": g.spot_id,
-            "breaks": breaks_by_guard.get(g.id, [])
+            "breaks": breaks_by_guard.get(g.shift_id, [])
         }
         for g in guards
     ]
