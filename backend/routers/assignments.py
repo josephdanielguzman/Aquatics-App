@@ -1,6 +1,7 @@
 import schemas, models
 from fastapi import Depends, status, APIRouter, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from db import get_db
 import oauth2
 
@@ -78,52 +79,78 @@ def create_assignment(
 )
 def replace_guard(
         id: int,
-        replacement_guard: schemas.Assignment,
+        new_assignment: schemas.Assignment,
         db: Session = Depends(get_db),
         user: dict = Depends(oauth2.get_current_user)
 ):
     """Swap and create an existing guard's spot assignment."""
-    # --- Retrieve target record ---
+    # --- Retrieve current assignments ---
 
-    # Assignment of guard whose spot is to be swapped with
+    # Active assignment of guard to be replaced
     old_guard = (
         db.query(models.Assignments)
         .join(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
         .join(models.Guards, models.Shifts.guard_id == models.Guards.id)
-        .filter(models.Guards.id == id)
-        .order_by(models.Assignments.time.desc())
+        .filter(
+            and_(
+                models.Guards.id == id,
+                models.Assignments.active.is_(True)
+            )
+        )
+        .first()
+    )
+
+    # Active assignment of replacement guard
+    replacement_guard = (
+        db.query(models.Assignments)
+        .join(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
+        .filter(
+            and_(
+                models.Shifts.id == new_assignment.shift_id,
+                models.Assignments.active.is_(True)
+            )
+        )
         .first()
     )
 
     # --- Error handling ---
 
+    # Prevent replacing no active assignment
     if not old_guard:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Assignment not found"
         )
 
+    # --- Deactivate current assignments ---
+
+    old_guard.active = False
+
+    # Replacement guard may not currently be assigned to spot
+    if replacement_guard is not None:
+        replacement_guard.active = False
+
+    db.flush()
+
     # --- Create and persist records ---
 
-    # Set new guard's spot to the old guard's spot
+    # Set replacement guard's spot to the replaced guard's spot
     replacement_guard_assignment = (
-        models.Assignments(**replacement_guard.dict())
+        models.Assignments(**new_assignment.dict())
     )
     replacement_guard_assignment.spot_id = old_guard.spot_id
 
-    # Create old guard's new assignment (no spot)
+    # Create replaced guard's new assignment (no spot)
     old_guard_assignment = models.Assignments(
         shift_id=old_guard.shift_id,
         spot_id=None,
-        time=replacement_guard.time,
+        time=new_assignment.time,
         active=True
     )
-
-    # Deactivate old record for old guard
-    old_guard.active = False
 
     db.add(old_guard_assignment)
     db.add(replacement_guard_assignment)
     db.commit()
+    db.refresh(replacement_guard_assignment)
 
     return replacement_guard_assignment
