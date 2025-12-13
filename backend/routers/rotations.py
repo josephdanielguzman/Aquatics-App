@@ -111,11 +111,3 @@ def get_available_spots(
         }
         for r in rotations
     ]
-
-#todo: implement rotations
-@router.post("/")
-def rotate(
-        db: Session = Depends(get_db),
-        user: dict = Depends(oauth2.get_current_user)
-):
-    """Rotate guards within a rotation."""
