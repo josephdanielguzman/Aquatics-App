@@ -8,6 +8,7 @@ export default function ManagementPanel(props) {
     const noSpot = props.guard.rotation === null
     const finalBreak = props.guard.breaks?.[2]
     const breakAvailable = !finalBreak || finalBreak.ended === null
+    const activeBreak = props.guard.breaks?.find(b => b.ended === null)
 
     return (
         <div className={'bg-white h-auto rounded-md shadow font-semibold'}>
@@ -23,8 +24,7 @@ export default function ManagementPanel(props) {
                     </div>
                 </div>
                 {(breakAvailable && noSpot) && <BreakEdit guard={props.guard}/>}
-                <SpotEdit guard={props.guard}/>
-
+                {!activeBreak && <SpotEdit guard={props.guard}/>}
             </div>
         </div>
     )

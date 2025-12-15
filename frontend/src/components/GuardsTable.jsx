@@ -112,6 +112,15 @@ export default function GuardsTable(props){
         }]
 
     return (
-            <Table className={'shadow border-1 border-gray-200 rounded-t-md'} dataSource={guardsOnShift.data} columns={columns} pagination={false} scroll={{y: 640}} virtual rowKey="guard_id" rowHoverable={true} size={"small"}></Table>
+            <Table
+                className={'shadow border-1 border-gray-200 rounded-t-md'}
+                dataSource={guardsOnShift.data}
+                columns={columns}
+                pagination={false}
+                scroll={{y: 640}}
+                virtual
+                rowKey="guard_id"
+                rowHoverable={true}
+                size={"small"}></Table>
     )
 }

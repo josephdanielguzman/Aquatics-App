@@ -32,7 +32,7 @@ export default function BreakEdit(props) {
     const handleSubmit = (values) => {
         if (!openBreak) {
             createBreakMutation.mutate({
-                guard_id: props.guard.guard_id,
+                shift_id: props.guard.shift_id,
                 type: nextBreak,
                 start_time: values.time.format('HH:mm')
 

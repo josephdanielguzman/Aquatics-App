@@ -66,7 +66,7 @@ export default function SpotEdit(props) {
 
     const guardOptions = guardsNoSpot.data?.map(g => ({
         value: g.id,
-        label: `${g.first_name} ${g.last_name}`
+        label: `${g.name}`,
     })) || []
 
     return (
