@@ -131,37 +131,68 @@ def get_guards_no_spot(
         db: Session = Depends(get_db),
         current_user: dict = Depends(oauth2.get_current_user)
 ):
-    """Returns all guards on shift that are not assigned to a spot."""
+    """Returns all guards on shift that are not assigned to a spot and not on an unfinished break."""
 
-    # --- Retrieve guards on shift with no spot ---
+    # Subquery: get the most recent break id for each shift
+    latest_break_subq = (
+        db.query(
+            models.Breaks.shift_id,
+            func.max(models.Breaks.id).label('max_break_id')
+        )
+        .group_by(models.Breaks.shift_id)
+        .subquery()
+    )
 
-    guards_on_shift_no_spot = (
-        db.query(models.Guards)
+    # Subquery: shifts with an unfinished break (end_time IS NULL on most recent break)
+    shifts_with_unfinished_break = (
+        db.query(models.Breaks.shift_id)
+        .join(
+            latest_break_subq,
+            and_(
+                models.Breaks.shift_id == latest_break_subq.c.shift_id,
+                models.Breaks.id == latest_break_subq.c.max_break_id
+            )
+        )
+        .filter(models.Breaks.end_time.is_(None))
+        .subquery()
+    )
+
+    # Main query: guards on shift with no spot (or no assignments) and no unfinished break
+    guards = (
+        db.query(
+            models.Guards.id,
+            func.concat_ws(
+                ' ',
+                models.Guards.first_name,
+                models.Guards.last_name
+            ).label('name')
+        )
         .join(models.Shifts, models.Guards.id == models.Shifts.guard_id)
+        .filter(models.Shifts.ended_at.is_(None))  # Only guards currently on shift
         .outerjoin(
             models.Assignments,
-            and_( # only include active assignments
+            and_(
                 models.Shifts.id == models.Assignments.shift_id,
                 models.Assignments.active.is_(True)
             )
         )
         .filter(
             or_(
-                # no active assignments exist
-                models.Assignments.id.is_(None),
-
-                # active assignment is of no spot
-                models.Assignments.spot_id.is_(None)
+                models.Assignments.id.is_(None),      # No assignments at all
+                models.Assignments.spot_id.is_(None)  # Active assignment with no spot
             )
         )
+        .filter(~models.Shifts.id.in_(shifts_with_unfinished_break))  # Exclude unfinished breaks
         .all()
     )
 
-    # --- Return empty if no guards ---
-
-    if not guards_on_shift_no_spot:
+    if not guards:
         return []
 
-    # --- Return response ---
-
-    return guards_on_shift_no_spot
+    return [
+        {
+            "id": g.id,
+            "name": g.name
+        }
+        for g in guards
+    ]
