@@ -23,6 +23,22 @@ def create_assignment(
     """Create a new spot assignment."""
     # --- Error handling ---
 
+    # Prevent assignment if there is an active break
+    open_break = (
+        db.query(models.Breaks)
+        .filter(
+            models.Breaks.shift_id == assignment.shift_id,
+            models.Breaks.end_time.is_(None)
+        )
+        .first()
+    )
+    if open_break is not None:
+        if open_break.end_time is None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Guard currently on break"
+            )
+
     # Prevent assignment to an occupied spot
     latest_spot_assignment = (
         db.query(models.Assignments)
@@ -120,6 +136,23 @@ def replace_guard(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Assignment not found"
+        )
+
+    # Prevent assignment if guard on break
+    replacement_guard_break = (
+        db.query(models.Breaks)
+        .join(models.Shifts, models.Breaks.shift_id == models.Shifts.id)
+        .filter(
+            models.Breaks.shift_id == new_assignment.shift_id,
+            models.Breaks.end_time.is_(None)
+        )
+        .order_by(models.Breaks.end_time.desc())
+        .first()
+    )
+    if replacement_guard_break is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Guard currently on break"
         )
 
     # --- Deactivate current assignments ---
