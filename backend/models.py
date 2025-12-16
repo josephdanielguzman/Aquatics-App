@@ -96,3 +96,4 @@ class RotationTimes(Base):
         nullable=False
     )
     time = Column(Time, nullable=False)
+    active = Column(Boolean, nullable=False, default=True)
