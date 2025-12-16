@@ -3,7 +3,8 @@ import {DownOutlined, HistoryOutlined, ReloadOutlined} from "@ant-design/icons";
 import {useState} from "react";
 import RotationData from "/src/components/RotationData.jsx";
 import {executeRotation} from "/src/utils/rotate.js";
-import {useCreateRotation} from "/src/hooks/useRotations.js";
+import {useCreateRotation, useRotationTime} from "/src/hooks/useRotations.js";
+import {formatTime} from "/src/utils/formatTime.js";
 
 export default function YellowRotation(props) {
     const format = 'h:mm A'
@@ -11,15 +12,14 @@ export default function YellowRotation(props) {
     // useStates
     const [showData, setShowData] = useState(false);
     const [time, setTime] = useState(null)
-    const [timeRotated, setTimeRotated] = useState(null)
 
     // hooks
     const rotateMutation = useCreateRotation()
+    const lastRotated = useRotationTime(3)
 
     // functions
     const handleRotate = () => {
         executeRotation(rotateMutation, 3, time)
-        setTimeRotated(time)
     }
 
     const handleTimeChange = (timeValue, timeString) => {
@@ -50,7 +50,7 @@ export default function YellowRotation(props) {
                                 Yellow
                             </p>
                             <p>
-                                <HistoryOutlined /> Last Rotated: {timeRotated}
+                                <HistoryOutlined /> Last Rotated: {formatTime(lastRotated.data)}
                             </p>
                         </div>
                         <div className={'flex gap-0.5 h-min'}>

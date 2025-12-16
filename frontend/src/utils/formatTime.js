@@ -1,6 +1,7 @@
 
 export const formatTime = (time24) => {
     if (!time24) return 'N/A';
+    if (time24 === '--:--') return '--:--';
 
     const [hours, minutes] = time24.split(':');
     const hour = parseInt(hours);
