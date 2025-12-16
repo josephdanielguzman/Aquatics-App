@@ -1,10 +1,12 @@
 from collections import defaultdict
-from fastapi import Depends, APIRouter
+from datetime import datetime
+from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_
 from db import get_db
 import models
 import oauth2
+import schemas
 
 router = APIRouter(prefix="/rotations", tags=["rotations"])
 
@@ -20,7 +22,7 @@ def get_rotations(
 
     # --- Retrieve spots ---
 
-    # Select data of the spot with the most recent assignment
+    # Select active assignment for all spots if it exists
     spots = (
         db.query(
             models.Spots.rotation_id,
@@ -35,11 +37,19 @@ def get_rotations(
             .label('guard_name'),
             models.Spots.is_active
         )
-        .outerjoin(models.Assignments, models.Spots.id == models.Assignments.spot_id)
-        .outerjoin(models.Shifts, models.Assignments.shift_id == models.Shifts.id)
+        .outerjoin(
+            models.Assignments,
+                   and_(
+                       models.Spots.id == models.Assignments.spot_id,
+                       models.Assignments.active.is_(True)
+                   )
+        )
+        .outerjoin(
+            models.Shifts,
+            models.Assignments.shift_id == models.Shifts.id
+        )
         .outerjoin(models.Guards, models.Shifts.guard_id == models.Guards.id)
-        .distinct(models.Spots.id) # one spot per spot id
-        .order_by(models.Spots.id, models.Assignments.time.desc()) # most recent assignment
+        .order_by(models.Spots.order)
         .all()
     )
 
