@@ -141,12 +141,21 @@ def end_break(
     end_datetime = datetime.combine(datetime.today(), break_end.end_time)
     duration_datetime = (end_datetime - start_datetime).total_seconds() / 60
 
-    # Prevents finishing break in < 10 minutes
-    if duration_datetime < 10:
+    # Prevents finishing break in < 10 minutes or lunch in < 30 minutes
+    if duration_datetime < 10 and update_break.type != 2:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Break less than 10 minutes"
         )
+
+
+    # Prevents finishing a lunch in < 30 minutes
+    if duration_datetime < 30 and update_break.type == 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Lunch less than 30 minutes"
+        )
+
 
     # --- Update and persist changes ---
 
