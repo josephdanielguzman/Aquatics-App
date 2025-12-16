@@ -22,7 +22,6 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
 )
 
 app.include_router(guards.router)
@@ -35,7 +34,3 @@ app.include_router(user.router)
 @app.get("/")
 async def root():
     return {"Message": "GG Aquatics"}
-
-@app.options("/{full_path:path}")
-async def options_handler():
-    return {}

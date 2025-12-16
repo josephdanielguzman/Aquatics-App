@@ -1,18 +1,33 @@
 import {Button, TimePicker} from "antd";
 import {ReloadOutlined, HistoryOutlined, DownOutlined} from "@ant-design/icons";
 import {useState} from "react";
-import RotationData from "../RotationData.jsx"
+import RotationData from "/src/components/RotationData.jsx"
+import {useCreateRotation} from "/src/hooks/useRotations.js";
+import {executeRotation} from "/src/utils/rotate.js";
 
 export default function VioletRotation(props) {
     const format = 'h:mm A'
+
+    // useStates
     const [showData, setShowData] = useState(false)
+    const [time, setTime] = useState(null)
+    const [timeRotated, setTimeRotated] = useState("N/A")
+
+    // hooks
+    const rotateMutation = useCreateRotation()
+
+    // functions
+    const handleRotate = () => {
+        executeRotation(rotateMutation, 1, time)
+        setTimeRotated(time)
+    }
+
+    const handleTimeChange = (timeValue, timeString) => {
+        setTime(timeValue.format('HH:mm'))
+    }
 
     const handleClick = () => {
         setShowData(!showData)
-    }
-
-    const handleRotate = () => {
-        console.log("clicked")
     }
 
     return (
@@ -33,11 +48,14 @@ export default function VioletRotation(props) {
                                 Violet
                             </p>
                             <p>
-                                <HistoryOutlined /> Last Rotated: 10:50
+                                <HistoryOutlined /> Last Rotated: {timeRotated}
                             </p>
                         </div>
                         <div className={'flex gap-0.5 h-min'}>
-                            <TimePicker format={format} />
+                            <TimePicker
+                                format={format}
+                                onChange={handleTimeChange}
+                            />
                             <Button
                                 onClick={handleRotate}
                                 variant={'outlined'}
