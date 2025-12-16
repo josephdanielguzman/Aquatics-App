@@ -7,7 +7,8 @@ export const queryKeys = {
     },
     ROTATIONS: {
         ALL: ['rotations'],
-        AVAIL_SPOTS: ['rotations', 'available_spots']
+        AVAIL_SPOTS: ['rotations', 'available_spots'],
+        LAST_ROTATED: ['rotations', 'last_rotated']
     },
     SHIFTS: ['shifts'],
     BREAKS: ['breaks'],

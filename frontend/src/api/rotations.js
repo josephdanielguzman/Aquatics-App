@@ -14,3 +14,8 @@ export const createRotation = async ({rotation_id, payload}) => {
     const { data } = await api.post(`/rotations/${rotation_id}/rotate`, payload)
     return data
 }
+
+export const getRotationTime = async ({rotation_id}) => {
+    const { data } = await api.get(`/rotations/${rotation_id}/last_rotated`)
+    return data
+}

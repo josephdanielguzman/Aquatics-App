@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {getRotations, getAvailableSpots, createRotation} from "/src/api/rotations.js";
+import {getRotations, getAvailableSpots, createRotation, getRotationTime} from "/src/api/rotations.js";
 import {queryKeys} from "/src/constants/queryKeys.jsx"
 import {message} from "antd";
 
@@ -31,5 +31,14 @@ export const useCreateRotation = () => {
         onError: (error) => {
             message.error(`Unable to rotate guards: ${error.message}`)
         }
+    })
+}
+
+export const useRotationTime = (rotation_id) => {
+    return useQuery({
+        queryKey: [...queryKeys.ROTATIONS.LAST_ROTATED, rotation_id],
+        queryFn: () => getRotationTime({rotation_id}),
+        staleTime: 5 * 60 * 1000,
+        enabled: !!rotation_id
     })
 }

@@ -217,3 +217,32 @@ def rotate_guards(
         "rotation_id": rotation_id,
         "rotated_guards": len(new_assignments),
     }
+
+@router.get("/{rotation_id}/last_rotated")
+def get_last_rotated(
+        rotation_id: int,
+        db: Session = Depends(get_db),
+        user: dict = Depends(oauth2.get_current_user)
+):
+    """Returns the time of the last rotation for the given rotation_id."""
+    # --- Retrieve time of last rotation ---
+
+    last_rotation = (
+        db.query(models.RotationTimes)
+        .join(
+            models.Rotations,
+            models.RotationTimes.rotation_id == models.Rotations.id
+        )
+        .filter(
+            models.Rotations.id == rotation_id,
+            models.RotationTimes.active.is_(True)
+        )
+        .first()
+    )
+
+    # --- Validation and return response ---
+
+    if last_rotation is None:
+        return "--:--"
+
+    return last_rotation.time
