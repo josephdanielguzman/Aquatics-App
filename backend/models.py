@@ -86,3 +86,13 @@ class Users(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
+
+class RotationTimes(Base):
+    __tablename__ = "rotation_times"
+    id = Column(Integer, primary_key=True, nullable=False)
+    rotation_id = Column(
+        Integer,
+        primary_key=True,
+        nullable=False
+    )
+    time = Column(Time, nullable=False)
