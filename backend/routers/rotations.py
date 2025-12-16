@@ -203,6 +203,29 @@ def rotate_guards(
                 active=True
             )
             new_assignments.append(new_assignment)
+
+    # --- Modify rotation records ---
+
+    # Deactivate previous rotation record
+    prev_rotation_entry = (
+        db.query(models.RotationTimes)
+        .filter(
+            models.RotationTimes.rotation_id == rotation_id,
+            models.RotationTimes.active.is_(True)
+        )
+        .first()
+    )
+    if prev_rotation_entry:
+        prev_rotation_entry.active = False
+        db.flush()
+
+    # Create new rotation record
+    new_rotation_entry = models.RotationTimes(
+        rotation_id=rotation_id,
+        time=new_rotation.time,
+        active=True
+    )
+    db.add(new_rotation_entry)
     
     # --- Persist all changes ---
     
