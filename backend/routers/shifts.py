@@ -41,9 +41,9 @@ def clock_in(
     return new_shift
 
 # todo: turn into a patch
-@router.post("/{id}:clock-out", response_model=schemas.ShiftResponse)
+@router.post("/{shift_id}/clock_out", response_model=schemas.ShiftResponse)
 def clock_out(
-        id: int,
+        shift_id: int,
         shift: schemas.ShiftClockOut,
         db: Session = Depends(get_db),
         user: dict = Depends(oauth2.get_current_user)
@@ -54,7 +54,7 @@ def clock_out(
     # Shift to be ended
     update_shift = (
         db.query(models.Shifts)
-        .filter(models.Shifts.id == id)
+        .filter(models.Shifts.id == shift_id)
         .first()
     )
 
@@ -64,7 +64,7 @@ def clock_out(
     if not update_shift:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail = f"Shift {id} not found"
+            detail = f"Shift {shift_id} not found"
         )
 
     # --- Update and persist changes ---
