@@ -1,6 +1,7 @@
 import {Button, Form, message, TimePicker} from 'antd';
-import {ClockCircleOutlined} from "@ant-design/icons";
+import {ClockCircleOutlined, HomeOutlined} from "@ant-design/icons";
 import {useCreateBreak, useUpdateBreak} from "/src/hooks/useBreaks.js";
+import {useUpdateShift} from "/src/hooks/useShifts.js";
 import dayjs from 'dayjs'
 
 export default function BreakEdit(props) {
@@ -74,41 +75,87 @@ export default function BreakEdit(props) {
         }
     }
 
+    const handleClockOut = (values) => {
+        updateShiftMutation.mutate({
+            shift_id: props.guard.shift_id,
+            payload: {
+                ended_at: values.time.format('HH:mm')
+            }
+        })
+    }
+
     return (
         <>
             {contextHolder}
-            <Form
-                name={'breakEdit'}
-                layout={'vertical'}
-                form={form}
-                onFinish={handleSubmit}
-            >
-                <Form.Item label={null}>
-                    <p className={'text-lg'}>
-                        <ClockCircleOutlined/>
-                        {openBreak ? ` Finish ${breakTypes[openBreak.type - 1]}`
-                                   : ` Send on ${breakTypes[nextBreak - 1]}`}
-                    </p>
-                </Form.Item>
-                <Form.Item
-                    label={'Time:'}
-                    name={'time'}
-                    rules={[{required:true}]}
+            {props.breakAvailable ? (
+                <Form
+                    name={'breakEdit'}
+                    layout={'vertical'}
+                    form={form}
+                    onFinish={handleSubmit}
                 >
-                    <TimePicker
-                        className='w-full font-normal'
-                        format={format}
-                    />
-                </Form.Item>
-                <Form.Item label={null} name={'submit'}>
-                    <Button
-                        type={'primary'}
-                        block htmlType={'submit'}
+                    <Form.Item label={null}>
+                        <p className={'text-lg'}>
+                            <ClockCircleOutlined/>
+                            {openBreak ? ` Finish ${breakTypes[openBreak.type - 1]}`
+                                       : ` Send on ${breakTypes[nextBreak - 1]}`}
+                        </p>
+                    </Form.Item>
+                    <Form.Item
+                        label={'Time:'}
+                        name={'time'}
+                        rules={[{required:true}]}
                     >
-                        Submit
-                    </Button>
-                </Form.Item>
-            </Form>
+                        <TimePicker
+                            className='w-full font-normal'
+                            format={format}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label={null}
+                        name={'submit'}
+                    >
+                        <Button
+                            type={'primary'}
+                            block htmlType={'submit'}
+                        >
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            ) : (
+                <Form
+                    name={'clockOut'}
+                    onFinish={handleClockOut}
+                    layout={'vertical'}
+                >
+                    <Form.Item label={null}>
+                        <p className={'text-lg'}>
+                            <HomeOutlined/> Send Home
+                        </p>
+                    </Form.Item>
+                    <Form.Item
+                        name={'time'}
+                        label={'Time'}
+                        rules={[{required: true}]}
+                    >
+                        <TimePicker
+                            className='w-full font-normal'
+                            format={format}
+                        />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button
+                            block
+                            type={'primary'}
+                            htmlType={'submit'}
+                        >
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            )}
+
         </>
     )
 }
