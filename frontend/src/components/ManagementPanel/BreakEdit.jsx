@@ -6,9 +6,17 @@ import dayjs from 'dayjs'
 
 export default function BreakEdit(props) {
 
-    // useStates
+    // hooks
     const createBreakMutation = useCreateBreak()
     const updateBreakMutation = useUpdateBreak()
+    const updateShiftMutation = useUpdateShift({
+        onSuccess: () => {
+            props.setSelectedGuardId(null)
+            props.setShowManagement(false)
+        }
+    })
+
+    // useStates
     const [form] = Form.useForm()
     const [messageApi, contextHolder] = message.useMessage()
 

@@ -25,15 +25,23 @@ export default function Dashboard() {
             <div className={'flex flex-col'}>
                 <div>
                     <div className={'flex justify-end mb-2'}>
-                        <Button type={showInit ? 'primary' : 'default'} onClick={() => setInit(!showInit)}
+                        <Button type={showInit ? 'primary' : 'default'}
+                                onClick={() => setInit(!showInit)}
                                 icon={<PlusOutlined/>}>Create</Button>
                     </div>
                     {showInit && <InitializationPanel/>}
                 </div>
-                <GuardsTable onGuardSelect={setShowManagement} setSelectedGuardId={setSelectedGuardId}/>
+                <GuardsTable
+                    onGuardSelect={setShowManagement}
+                    setSelectedGuardId={setSelectedGuardId}
+                />
             </div>
-            {showManagement && (
-                <ManagementPanel setShowManagement={setShowManagement} guard={selectedGuard}/>
+            {showManagement && selectedGuard && (
+                <ManagementPanel
+                    setShowManagement={setShowManagement}
+                    setSelectedGuardId={setSelectedGuardId}
+                    guard={selectedGuard}
+                />
             )}
         </div>
     )

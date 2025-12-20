@@ -35,7 +35,13 @@ def get_guard_status(
             models.Spots.name.label('spot_name'),
             models.Spots.id.label('spot_id'),
         )
-        .join(models.Shifts, models.Guards.id == models.Shifts.guard_id)
+        .join(models.Shifts,
+              and_(
+                  # only include unfinished shifts
+                  models.Guards.id == models.Shifts.guard_id,
+                  models.Shifts.ended_at.is_(None)
+              )
+        )
         .outerjoin(models.Assignments, models.Shifts.id == models.Assignments.shift_id)
         .outerjoin(models.Spots, models.Assignments.spot_id == models.Spots.id)
         .outerjoin(models.Rotations, models.Spots.rotation_id == models.Rotations.id)

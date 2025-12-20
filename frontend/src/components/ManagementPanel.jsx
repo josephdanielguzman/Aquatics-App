@@ -1,6 +1,6 @@
 import {EnvironmentOutlined, UserOutlined} from "@ant-design/icons";
 import BreakEdit from "/src/components/ManagementPanel/BreakEdit.jsx";
-import SpotEdit from "./ManagementPanel/SpotEdit.jsx";
+import SpotEdit from "/src/components/ManagementPanel/SpotEdit.jsx";
 
 
 export default function ManagementPanel(props) {
@@ -23,7 +23,14 @@ export default function ManagementPanel(props) {
                         <p className={'pt-1'}><EnvironmentOutlined/> {props.guard.spot_name ? props.guard.spot_name : 'N/A'}</p>
                     </div>
                 </div>
-                {(breakAvailable && noSpot) && <BreakEdit guard={props.guard}/>}
+                {(noSpot) &&
+                    <BreakEdit
+                        guard={props.guard}
+                        setSelectedGuardId={props.setSelectedGuardId}
+                        breakAvailable={breakAvailable}
+                        setShowManagement={props.setShowManagement}
+                    />
+                }
                 {!activeBreak && <SpotEdit guard={props.guard}/>}
             </div>
         </div>
