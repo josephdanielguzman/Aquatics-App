@@ -1,18 +1,25 @@
-import { Table, Button, Tag } from 'antd';
+import { Table, Button, Tag, Input, Space } from 'antd';
 import {
     CheckOutlined,
     ClockCircleOutlined,
     CloseOutlined,
+    SearchOutlined
 } from "@ant-design/icons";
-import {useState} from "react";
+import {useState, useRef} from "react";
 import {useGuardsOnShift} from "/src/hooks/useGuards.js";
 import { formatTime } from "/src/utils/formatTime.js";
 
 export default function GuardsTable(props){
 
+    // hooks
     const guardsOnShift = useGuardsOnShift()
 
+    // useStates
     const [selectedId, setSelectedId] = useState(null);
+    const [searchText, setSearchText] = useState('')
+    const [searchedColumn, setSearchedColumn] = useState('')
+
+    const searchInput = useRef(null);
 
     const findBreak = (record, breakType) => {
         const b = record.breaks?.find(b => b.type === breakType);
@@ -39,12 +46,87 @@ export default function GuardsTable(props){
 
         }
     }
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    }
+
+    const getColumnSearchProps = dataIndex => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+          <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
+            <Input
+              ref={searchInput}
+              placeholder={`Search ${dataIndex}`}
+              value={selectedKeys[0]}
+              onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+              onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              style={{ marginBottom: 8, display: 'block' }}
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => {
+                    handleSearch(selectedKeys, confirm, dataIndex)
+                    confirm({ closeDropdown: true })
+                }}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Search
+              </Button>
+              <Button
+                onClick={() => {
+                    clearFilters && handleReset(clearFilters)
+                    handleSearch(selectedKeys, confirm, dataIndex)
+                }}
+                size="small"
+                style={{ width: 60 }}
+              >
+                Reset
+              </Button>
+              <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  close();
+                }}
+              >
+                close
+              </Button>
+            </Space>
+          </div>
+        ),
+        filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />,
+        onFilter: (value, record) =>
+          record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        filterDropdownProps: {
+          onOpenChange(open) {
+            if (open) {
+              setTimeout(() => searchInput.current?.select(), 100);
+            }
+          },
+        },
+        render: text =>
+          searchedColumn === dataIndex ? (
+            text.toString()
+          ) : (
+            text
+          ),
+    })
+
+    const handleReset = clearFilters => {
+        clearFilters()
+        setSearchText('')
+    }
 
     const columns = [
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            ...getColumnSearchProps('name')
         },
         {
             title: 'Clock-In',
